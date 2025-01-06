@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { CreateCamperRequest } from './dto/request/create-camper-request.dto';
 import { UpdateCamperAllergiesRequest } from './dto/request/update-camper-allergies-request.dto';
 import { CommandBus } from '@nestjs/cqrs';
-import { CreateCamperCommand } from './commands/create-camper.command';
+import { CreateCamperCommand } from './commands/create-camper/create-camper.command';
 
 @Controller('campers')
 export class CampersController {
