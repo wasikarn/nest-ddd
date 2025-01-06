@@ -20,6 +20,6 @@ export abstract class BaseEntityRepository<
   }
 
   async findAll(): Promise<TEntity[]> {
-    return this.find();
+    return this.find({});
   }
 }
