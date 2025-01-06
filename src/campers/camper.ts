@@ -1,11 +1,12 @@
 import { AggregateRoot } from '@nestjs/cqrs';
+import { BadRequestException } from '@nestjs/common';
 
 export class Camper extends AggregateRoot {
   constructor(
     private readonly _id: string,
     private readonly name: string,
     private readonly age: number,
-    private readonly allergies: string[],
+    private allergies: string[],
   ) {
     super();
   }
@@ -24,5 +25,17 @@ export class Camper extends AggregateRoot {
 
   getAllergies(): string[] {
     return [...this.allergies];
+  }
+
+  updateAllergies(allergies: string[]): void {
+    const allergiesLowerCase: string[] = allergies.map(
+      (allergy: string): string => allergy.toLowerCase(),
+    );
+
+    if (allergiesLowerCase.includes('chocolate')) {
+      throw new BadRequestException('Allergy may not be chocolate.');
+    }
+
+    this.allergies = allergies;
   }
 }
