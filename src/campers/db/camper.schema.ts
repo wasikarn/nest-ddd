@@ -1,5 +1,8 @@
 import { IdentifiableEntitySchema } from '../../database/abstacts/identifiable-entity.schema';
 import { Prop, Schema } from '@nestjs/mongoose';
+import { HydratedDocument } from 'mongoose';
+
+export type CamperDocument = HydratedDocument<CamperSchema>;
 
 @Schema({ versionKey: false, collection: 'campers' })
 export class CamperSchema extends IdentifiableEntitySchema {
