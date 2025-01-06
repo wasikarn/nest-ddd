@@ -53,7 +53,7 @@ $ bun start:prod
 
 ## Request tests
 
-### Create campers
+### Create camper
 ```bash
 $ curl --location 'http://localhost:3000/campers' \
     --header 'Content-Type: application/json' \
@@ -71,4 +71,9 @@ $ curl --location --request PATCH 'http://localhost:3000/campers/:camperId/aller
     --data '{
         "allergies": ["Cookies"]
     }'
+```
+
+### Get all campers
+```bash
+$ curl --location 'http://localhost:3000/campers'
 ```
