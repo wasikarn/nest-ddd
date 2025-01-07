@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import {
   CamperDocument,
   CamperFlatDocument,
@@ -7,6 +7,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CamperDto } from '../camper.dto';
+import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class CamperDtoRepository {
@@ -31,5 +32,22 @@ export class CamperDtoRepository {
         isAllergicToPeanuts,
       };
     });
+  }
+
+  async findById(id: string): Promise<CamperDto> {
+    const camper: CamperFlatDocument | null = await this.camperModel
+      .findById(new ObjectId(id), {}, { lean: true })
+      .exec();
+
+    if (!camper) {
+      throw new NotFoundException('Camper was not found.');
+    }
+
+    return {
+      ...camper,
+      isAllergicToPeanuts: camper.allergies
+        .map((allergy: string): string => allergy.toLowerCase())
+        .includes('peanuts'),
+    };
   }
 }

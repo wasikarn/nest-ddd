@@ -77,3 +77,8 @@ $ curl --location --request PATCH 'http://localhost:3000/campers/:camperId/aller
 ```bash
 $ curl --location 'http://localhost:3000/campers'
 ```
+
+### Get by id camper
+```bash
+$ curl --location 'http://localhost:3000/campers/:id'
+```
