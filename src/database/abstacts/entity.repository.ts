@@ -14,49 +14,63 @@ export abstract class EntityRepository<
   ) {}
 
   async create(entity: TEntity): Promise<void> {
-    await new this.schemaModel(this.schemaFactory.create(entity)).save();
+    const schema: TSchema = this.toSchema(entity);
+
+    await new this.schemaModel(schema).save();
   }
 
   protected async findOne(
     entityFilterQuery: FilterQuery<TSchema>,
   ): Promise<TEntity> {
-    const queriedEntity: TSchema | null = await this.schemaModel
+    const schema: TSchema | null = await this.schemaModel
       .findOne(entityFilterQuery)
       .lean<TSchema>();
 
-    if (!queriedEntity) {
+    if (!schema) {
       throw new NotFoundException('Entity was not found.');
     }
 
-    return this.schemaFactory.createFromSchema(queriedEntity);
+    return this.toEntity(schema);
   }
 
   protected async find(
     entityFilterQuery: FilterQuery<TSchema> = {},
   ): Promise<TEntity[]> {
-    const queriedEntities: TSchema[] = await this.schemaModel
+    const schemas: TSchema[] = await this.schemaModel
       .find(entityFilterQuery)
       .lean<TSchema[]>();
 
-    return queriedEntities.map((schema: TSchema): TEntity => {
-      return this.schemaFactory.createFromSchema(schema);
-    });
+    return schemas.map((schema: TSchema): TEntity => this.toEntity(schema));
   }
 
   protected async findOneAndReplace(
     entityFilterQuery: FilterQuery<TSchema>,
     entity: TEntity,
   ): Promise<void> {
-    const updatedEntityDocument: TSchema | null = await this.schemaModel
-      .findOneAndReplace(entityFilterQuery, this.schemaFactory.create(entity), {
+    const updatedSchema: TSchema | null = await this.schemaModel
+      .findOneAndReplace(entityFilterQuery, this.toSchema(entity), {
         new: true,
         useFindAndModify: false,
         returnDocument: 'after',
       })
       .lean<TSchema>();
 
-    if (!updatedEntityDocument) {
+    if (!updatedSchema) {
       throw new NotFoundException('Unable to find the entity to replace.');
     }
+  }
+
+  /**
+   * Converts the given schema object into an entity object.
+   */
+  private toEntity(schema: TSchema): TEntity {
+    return this.schemaFactory.createFromSchema(schema);
+  }
+
+  /**
+   * Converts the given entity to its corresponding schema representation.
+   */
+  private toSchema(entity: TEntity): TSchema {
+    return this.schemaFactory.create(entity);
   }
 }
