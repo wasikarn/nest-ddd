@@ -4,9 +4,9 @@ import { UpdateCamperAllergiesRequest } from './dto/request/update-camper-allerg
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateCamperCommand } from './commands/create-camper/create-camper.command';
 import { UpdateAllergiesCommand } from './commands/update-allergies/update-allergies.command';
-import { CampersQuery } from './queries/campers.query';
+import { ListCampersQuery } from './queries/list-campers.query';
 import { CamperDto } from './camper.dto';
-import { FindByIdCamperQuery } from './queries/find-by-id-camper.query';
+import { GetCamperQuery } from './queries/get-camper.query';
 
 @Controller('campers')
 export class CampersController {
@@ -17,14 +17,16 @@ export class CampersController {
 
   @Get(':id')
   async getCamper(@Param('id') camperId: string) {
-    return this.queryBus.execute<FindByIdCamperQuery, CamperDto>(
-      new FindByIdCamperQuery(camperId),
+    return this.queryBus.execute<GetCamperQuery, CamperDto>(
+      new GetCamperQuery(camperId),
     );
   }
 
   @Get()
   async getCampers(): Promise<CamperDto[]> {
-    return this.queryBus.execute<CampersQuery, CamperDto[]>(new CampersQuery());
+    return this.queryBus.execute<ListCampersQuery, CamperDto[]>(
+      new ListCampersQuery(),
+    );
   }
 
   @Post()

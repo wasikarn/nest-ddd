@@ -1,3 +1,3 @@
-export class FindByIdCamperQuery {
+export class GetCamperQuery {
   constructor(public readonly camperId: string) {}
 }

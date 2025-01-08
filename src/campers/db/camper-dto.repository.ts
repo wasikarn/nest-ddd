@@ -17,9 +17,7 @@ export class CamperDtoRepository {
   ) {}
 
   async findAll(): Promise<CamperDto[]> {
-    const campers: CamperFlatDocument[] = await this.camperModel
-      .find({}, {}, { lean: true })
-      .exec();
+    const campers: CamperFlatDocument[] = await this.camperModel.find().lean();
 
     return campers.map((camper: CamperDocument): CamperDto => {
       const allergiesLower: string[] = camper.allergies.map(
@@ -34,10 +32,10 @@ export class CamperDtoRepository {
     });
   }
 
-  async findById(id: string): Promise<CamperDto> {
+  async findOneById(id: string): Promise<CamperDto> {
     const camper: CamperFlatDocument | null = await this.camperModel
-      .findById(new ObjectId(id), {}, { lean: true })
-      .exec();
+      .findById(new ObjectId(id))
+      .lean();
 
     if (!camper) {
       throw new NotFoundException('Camper was not found.');

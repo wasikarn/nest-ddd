@@ -1,8 +1,8 @@
 import { Provider } from '@nestjs/common';
-import { CampersHandler } from './campers.handler';
-import { FindByIdCamperHandler } from './find-by-id-camper.handler';
+import { ListCampersHandler } from './list-campers.handler';
+import { GetCamperHandler } from './get-camper.handler';
 
 export const CamperQueryHandlers: Provider[] = [
-  CampersHandler,
-  FindByIdCamperHandler,
+  ListCampersHandler,
+  GetCamperHandler,
 ];

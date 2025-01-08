@@ -1,10 +1,10 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { CampersQuery } from './campers.query';
+import { ListCampersQuery } from './list-campers.query';
 import { CamperDtoRepository } from '../db/camper-dto.repository';
 import { CamperDto } from '../camper.dto';
 
-@QueryHandler(CampersQuery)
-export class CampersHandler implements IQueryHandler<CampersQuery> {
+@QueryHandler(ListCampersQuery)
+export class ListCampersHandler implements IQueryHandler<ListCampersQuery> {
   constructor(private readonly camperDtoRepository: CamperDtoRepository) {}
 
   async execute(): Promise<CamperDto[]> {
