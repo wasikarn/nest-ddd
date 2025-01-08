@@ -9,58 +9,51 @@ export abstract class EntityRepository<
   TEntity extends AggregateRoot,
 > {
   constructor(
-    protected readonly entityModel: Model<TSchema>,
-    protected readonly entitySchemaFactory: EntitySchemaFactory<
-      TSchema,
-      TEntity
-    >,
+    protected readonly schemaModel: Model<TSchema>,
+    protected readonly schemaFactory: EntitySchemaFactory<TSchema, TEntity>,
   ) {}
 
   async create(entity: TEntity): Promise<void> {
-    await new this.entityModel(this.entitySchemaFactory.create(entity)).save();
+    await new this.schemaModel(this.schemaFactory.create(entity)).save();
   }
 
   protected async findOne(
     entityFilterQuery: FilterQuery<TSchema>,
   ): Promise<TEntity> {
-    const entityDocument = await this.entityModel.findOne(
-      entityFilterQuery,
-      {},
-      { lean: true },
-    );
+    const queriedEntity: TSchema | null = await this.schemaModel
+      .findOne(entityFilterQuery)
+      .lean<TSchema>();
 
-    if (!entityDocument) {
+    if (!queriedEntity) {
       throw new NotFoundException('Entity was not found.');
     }
 
-    return this.entitySchemaFactory.createFromSchema(entityDocument as TSchema);
+    return this.schemaFactory.createFromSchema(queriedEntity);
   }
 
   protected async find(
-    entityFilterQuery?: FilterQuery<TSchema>,
+    entityFilterQuery: FilterQuery<TSchema> = {},
   ): Promise<TEntity[]> {
-    return (
-      await this.entityModel.find(entityFilterQuery || {}, {}, { lean: true })
-    ).map(
-      (entityDocument): TEntity =>
-        this.entitySchemaFactory.createFromSchema(entityDocument as TSchema),
-    );
+    const queriedEntities: TSchema[] = await this.schemaModel
+      .find(entityFilterQuery)
+      .lean<TSchema[]>();
+
+    return queriedEntities.map((schema: TSchema): TEntity => {
+      return this.schemaFactory.createFromSchema(schema);
+    });
   }
 
   protected async findOneAndReplace(
     entityFilterQuery: FilterQuery<TSchema>,
     entity: TEntity,
   ): Promise<void> {
-    const updatedEntityDocument = await this.entityModel.findOneAndReplace(
-      entityFilterQuery,
-      this.entitySchemaFactory.create(entity),
-      {
+    const updatedEntityDocument: TSchema | null = await this.schemaModel
+      .findOneAndReplace(entityFilterQuery, this.schemaFactory.create(entity), {
         new: true,
         useFindAndModify: false,
-        lean: true,
         returnDocument: 'after',
-      },
-    );
+      })
+      .lean<TSchema>();
 
     if (!updatedEntityDocument) {
       throw new NotFoundException('Unable to find the entity to replace.');
