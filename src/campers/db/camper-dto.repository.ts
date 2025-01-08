@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import {
   CamperDocument,
-  CamperFlatDocument,
+  CamperLeanDocument,
   CamperSchema,
 } from './camper.schema';
 import { InjectModel } from '@nestjs/mongoose';
@@ -17,25 +17,22 @@ export class CamperDtoRepository {
   ) {}
 
   async findAll(): Promise<CamperDto[]> {
-    const campers: CamperFlatDocument[] = await this.camperModel.find().lean();
+    const campers: CamperLeanDocument[] = await this.camperModel
+      .find()
+      .lean<CamperLeanDocument[]>();
 
-    return campers.map((camper: CamperDocument): CamperDto => {
-      const allergiesLower: string[] = camper.allergies.map(
-        (allergy: string): string => allergy.toLowerCase(),
-      );
+    return campers.map((camper: CamperLeanDocument): CamperDto => {
+      const allergiesLower: string[] = this.getAllergiesLower(camper);
       const isAllergicToPeanuts: boolean = allergiesLower.includes('peanuts');
 
-      return {
-        ...camper,
-        isAllergicToPeanuts,
-      };
+      return { ...camper, isAllergicToPeanuts };
     });
   }
 
   async findOneById(id: string): Promise<CamperDto> {
-    const camper: CamperFlatDocument | null = await this.camperModel
+    const camper: CamperLeanDocument | null = await this.camperModel
       .findById(new ObjectId(id))
-      .lean();
+      .lean<CamperLeanDocument>();
 
     if (!camper) {
       throw new NotFoundException('Camper was not found.');
@@ -43,9 +40,13 @@ export class CamperDtoRepository {
 
     return {
       ...camper,
-      isAllergicToPeanuts: camper.allergies
-        .map((allergy: string): string => allergy.toLowerCase())
-        .includes('peanuts'),
+      isAllergicToPeanuts: this.getAllergiesLower(camper).includes('peanuts'),
     };
+  }
+
+  private getAllergiesLower(camper: CamperLeanDocument): string[] {
+    return camper.allergies.map((allergy: string): string =>
+      allergy.toLowerCase(),
+    );
   }
 }
