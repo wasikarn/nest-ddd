@@ -16,7 +16,7 @@ export class CampersController {
   ) {}
 
   @Get(':id')
-  async getCamper(@Param('id') camperId: string) {
+  async getCamper(@Param('id') camperId: string): Promise<CamperDto> {
     return this.queryBus.execute<GetCamperQuery, CamperDto>(
       new GetCamperQuery(camperId),
     );
