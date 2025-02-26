@@ -10,8 +10,8 @@ export type CamperLeanDocument = FlattenMaps<CamperDocument>;
 export class CamperSchema extends IdentifiableEntitySchema {
   @Prop()
   readonly name: string;
-@Prop()
+  @Prop()
   readonly age: number;
-@Prop()
+  @Prop()
   readonly allergies: string[];
 }
