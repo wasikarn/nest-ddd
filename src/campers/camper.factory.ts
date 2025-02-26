@@ -1,9 +1,10 @@
-import { EntityFactory } from '../database/interfaces/entity.factory';
-import { Camper } from './camper';
 import { Injectable } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
-import { CamperCreatedEvent } from './events/camper-created.event';
+
+import { EntityFactory } from '../database/interfaces/entity.factory';
+import { Camper } from './camper';
 import { CamperEntityRepository } from './db/camper-entity.repository';
+import { CamperCreatedEvent } from './events/camper-created.event';
 
 @Injectable()
 export class CamperFactory implements EntityFactory<Camper> {
@@ -22,6 +23,7 @@ export class CamperFactory implements EntityFactory<Camper> {
       age,
       allergies,
     );
+
     await this.camperEntityRepository.create(camper);
     camper.apply(new CamperCreatedEvent(camper.getId()));
 

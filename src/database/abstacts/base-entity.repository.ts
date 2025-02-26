@@ -1,8 +1,9 @@
-import { IdentifiableEntitySchema } from './identifiable-entity.schema';
 import { AggregateRoot } from '@nestjs/cqrs';
-import { EntityRepository } from './entity.repository';
-import { FilterQuery } from 'mongoose';
 import { ObjectId } from 'mongodb';
+import { FilterQuery } from 'mongoose';
+
+import { EntityRepository } from './entity.repository';
+import { IdentifiableEntitySchema } from './identifiable-entity.schema';
 
 export abstract class BaseEntityRepository<
   TSchema extends IdentifiableEntitySchema,

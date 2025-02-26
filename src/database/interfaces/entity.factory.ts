@@ -1,3 +1,3 @@
 export interface EntityFactory<TEntity> {
-  create(...args: any): TEntity | Promise<TEntity>;
+  create(...args: any): Promise<TEntity> | TEntity;
 }

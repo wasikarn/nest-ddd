@@ -1,12 +1,13 @@
 import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
-import { CreateCamperRequest } from './dto/request/create-camper-request.dto';
-import { UpdateCamperAllergiesRequest } from './dto/request/update-camper-allergies-request.dto';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+
+import { CamperDto } from './camper.dto';
 import { CreateCamperCommand } from './commands/create-camper/create-camper.command';
 import { UpdateAllergiesCommand } from './commands/update-allergies/update-allergies.command';
-import { ListCampersQuery } from './queries/list-campers.query';
-import { CamperDto } from './camper.dto';
+import { CreateCamperRequest } from './dto/request/create-camper-request.dto';
+import { UpdateCamperAllergiesRequest } from './dto/request/update-camper-allergies-request.dto';
 import { GetCamperQuery } from './queries/get-camper.query';
+import { ListCampersQuery } from './queries/list-campers.query';
 
 @Controller('campers')
 export class CampersController {

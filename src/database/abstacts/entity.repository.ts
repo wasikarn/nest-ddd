@@ -1,8 +1,9 @@
-import { AggregateRoot } from '@nestjs/cqrs';
-import { IdentifiableEntitySchema } from './identifiable-entity.schema';
-import { FilterQuery, Model } from 'mongoose';
-import { EntitySchemaFactory } from '../interfaces/entity-schema.factory';
 import { NotFoundException } from '@nestjs/common';
+import { AggregateRoot } from '@nestjs/cqrs';
+import { FilterQuery, Model } from 'mongoose';
+
+import { EntitySchemaFactory } from '../interfaces/entity-schema.factory';
+import { IdentifiableEntitySchema } from './identifiable-entity.schema';
 
 export abstract class EntityRepository<
   TSchema extends IdentifiableEntitySchema,
@@ -22,7 +23,7 @@ export abstract class EntityRepository<
   protected async findOne(
     entityFilterQuery: FilterQuery<TSchema>,
   ): Promise<TEntity> {
-    const schema: TSchema | null = await this.schemaModel
+    const schema: null | TSchema = await this.schemaModel
       .findOne(entityFilterQuery)
       .lean<TSchema>();
 
@@ -47,11 +48,11 @@ export abstract class EntityRepository<
     entityFilterQuery: FilterQuery<TSchema>,
     entity: TEntity,
   ): Promise<void> {
-    const updatedSchema: TSchema | null = await this.schemaModel
+    const updatedSchema: null | TSchema = await this.schemaModel
       .findOneAndReplace(entityFilterQuery, this.toSchema(entity), {
         new: true,
-        useFindAndModify: false,
         returnDocument: 'after',
+        useFindAndModify: false,
       })
       .lean<TSchema>();
 

@@ -1,4 +1,5 @@
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
+
 import { CamperCreatedEvent } from './camper-created.event';
 
 @EventsHandler(CamperCreatedEvent)

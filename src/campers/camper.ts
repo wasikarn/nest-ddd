@@ -1,5 +1,5 @@
-import { AggregateRoot } from '@nestjs/cqrs';
 import { BadRequestException } from '@nestjs/common';
+import { AggregateRoot } from '@nestjs/cqrs';
 
 export class Camper extends AggregateRoot {
   constructor(

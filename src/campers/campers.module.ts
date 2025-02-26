@@ -1,17 +1,19 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
+import { MongooseModule, SchemaFactory } from '@nestjs/mongoose';
+
+import { CamperFactory } from './camper.factory';
 import { CampersController } from './campers.controller';
+import { CamperCommandHandlers } from './commands';
+import { CamperDtoRepository } from './db/camper-dto.repository';
 import { CamperEntityRepository } from './db/camper-entity.repository';
 import { CamperSchemaFactory } from './db/camper-schema.factory';
-import { CamperFactory } from './camper.factory';
-import { CamperCommandHandlers } from './commands';
-import { CamperEventHandlers } from './events';
-import { MongooseModule, SchemaFactory } from '@nestjs/mongoose';
 import { CamperSchema } from './db/camper.schema';
+import { CamperEventHandlers } from './events';
 import { CamperQueryHandlers } from './queries';
-import { CamperDtoRepository } from './db/camper-dto.repository';
 
 @Module({
+  controllers: [CampersController],
   imports: [
     CqrsModule,
     MongooseModule.forFeature([
@@ -21,7 +23,6 @@ import { CamperDtoRepository } from './db/camper-dto.repository';
       },
     ]),
   ],
-  controllers: [CampersController],
   providers: [
     CamperEntityRepository,
     CamperDtoRepository,

@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { Camper } from '../camper';
-import { EntitySchemaFactory } from '../../database/interfaces/entity-schema.factory';
-import { CamperSchema } from './camper.schema';
 import { ObjectId } from 'mongodb';
+
+import { EntitySchemaFactory } from '../../database/interfaces/entity-schema.factory';
+import { Camper } from '../camper';
+import { CamperSchema } from './camper.schema';
 
 @Injectable()
 export class CamperSchemaFactory
@@ -11,9 +12,9 @@ export class CamperSchemaFactory
   create(camper: Camper): CamperSchema {
     return {
       _id: new ObjectId(camper.getId()),
-      name: camper.getName(),
       age: camper.getAge(),
       allergies: camper.getAllergies(),
+      name: camper.getName(),
     };
   }
 
